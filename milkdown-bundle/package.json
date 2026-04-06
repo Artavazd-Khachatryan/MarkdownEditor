@@ -1,0 +1,24 @@
+{
+  "name": "milkdown-bundle",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "vite build && cp ../markdown-editor/src/androidMain/assets/offline/milkdown-editor.js ../markdown-editor/src/iosMain/resources/offline/milkdown-editor.js && cp ../markdown-editor/src/androidMain/assets/offline/milkdown-editor.css ../markdown-editor/src/iosMain/resources/offline/milkdown-editor.css"
+  },
+  "dependencies": {
+    "@milkdown/core": "^7.5.7",
+    "@milkdown/ctx": "^7.5.7",
+    "@milkdown/preset-commonmark": "^7.5.7",
+    "@milkdown/preset-gfm": "^7.5.7",
+    "@milkdown/plugin-listener": "^7.5.7",
+    "@milkdown/plugin-clipboard": "^7.5.7",
+    "@milkdown/plugin-history": "^7.5.7",
+    "@milkdown/plugin-math": "^7.5.7",
+    "@milkdown/theme-nord": "^7.5.7",
+    "katex": "^0.16.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "typescript": "^5.5.0"
+  }
+}

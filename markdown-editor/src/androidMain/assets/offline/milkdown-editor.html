@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="milkdown-editor.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: transparent; }
+    #editor {
+      width: 100%;
+      padding: 16px;
+      outline: none;
+      cursor: text;
+    }
+    .milkdown { min-height: unset; }
+    .milkdown .editor { min-height: 120px; }
+    .ProseMirror.is-empty::before {
+      content: attr(data-placeholder);
+      color: #9ca3af;
+      pointer-events: none;
+      position: absolute;
+      float: left;
+      height: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="editor"></div>
+  <script src="milkdown-editor.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      MilkdownEditor.init('', false, false)
+
+      function focusEditorAtEnd(e) {
+        var prosemirror = document.querySelector('.ProseMirror')
+        if (prosemirror && !prosemirror.contains(e.target)) {
+          prosemirror.focus()
+          var range = document.createRange()
+          var sel = window.getSelection()
+          range.selectNodeContents(prosemirror)
+          range.collapse(false)
+          sel.removeAllRanges()
+          sel.addRange(range)
+        }
+      }
+
+      document.body.addEventListener('click', focusEditorAtEnd)
+      document.body.addEventListener('touchend', focusEditorAtEnd)
+    })
+  </script>
+</body>
+</html>
