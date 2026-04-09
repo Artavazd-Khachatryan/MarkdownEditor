@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.artavazd-khachatryan"
-version = "1.0.0-alpha01"
+version = "1.0.0-alpha02"
 
 val isMac = System.getProperty("os.name").lowercase().contains("mac")
 
@@ -19,10 +19,13 @@ kotlin {
     }
 
     if (isMac) {
+        val xcf = org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFrameworkConfig(project, "MarkdownEditor")
+
         listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { target ->
             target.binaries.framework {
                 baseName = "MarkdownEditor"
                 isStatic = false
+                xcf.add(this)
             }
         }
 
@@ -38,6 +41,9 @@ kotlin {
                 }
                 tasks.named(framework.linkTaskName) {
                     finalizedBy(copyTaskName)
+                }
+                tasks.matching { it.name.contains("ForMarkdownEditorXCFramework") }.configureEach {
+                    dependsOn(copyTaskName)
                 }
             }
         }
