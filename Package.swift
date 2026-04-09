@@ -15,8 +15,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "MarkdownEditor",
-            url: "https://github.com/Artavazd-Khachatryan/MarkdownEditor/releases/download/1.0.0/MarkdownEditor.xcframework.zip",
-            checksum: "REPLACE_WITH_CHECKSUM_AFTER_RELEASE"
+            url: "https://github.com/Artavazd-Khachatryan/MarkdownEditor/releases/download/1.0.0-alpha02/MarkdownEditor.xcframework.zip",
+            checksum: "3a51f2894e3b305b7999efd865b1fbbf580194cedc35c48c156da7dbe192b974"
         )
     ]
 )

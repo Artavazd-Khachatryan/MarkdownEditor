@@ -47,6 +47,22 @@ kotlin {
                 }
             }
         }
+
+        // After the XCFramework is assembled, copy offline assets into simulator slices
+        // (fat framework assembly doesn't carry over custom resource folders)
+        tasks.matching { it.name.startsWith("assembleMarkdownEditor") && it.name.endsWith("XCFramework") }.configureEach {
+            doLast {
+                val xcfDir = layout.buildDirectory.dir("XCFrameworks").get().asFile
+                xcfDir.walkTopDown()
+                    .filter { it.name == "MarkdownEditor.framework" && it.parentFile.name.contains("simulator") }
+                    .forEach { frameworkDir ->
+                        copy {
+                            from("src/iosMain/resources/offline")
+                            into(frameworkDir.resolve("offline"))
+                        }
+                    }
+            }
+        }
     }
 
     sourceSets {
