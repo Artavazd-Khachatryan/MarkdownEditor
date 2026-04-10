@@ -65,6 +65,15 @@ kotlin {
         }
     }
 
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPages"
+                url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
+            }
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
