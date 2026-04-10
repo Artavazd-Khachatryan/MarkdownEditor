@@ -19,9 +19,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewAssetLoader
+import java.io.InputStream
 
 private const val ASSET_HOST = "https://appassets.androidplatform.net"
 private const val EDITOR_URL = "$ASSET_HOST/assets/offline/milkdown-editor.html"
+
+private class ClasspathPathHandler : WebViewAssetLoader.PathHandler {
+    private val classLoader = MarkdownEditorView::class.java.classLoader
+
+    override fun handle(path: String): WebResourceResponse? {
+        val stream: InputStream = classLoader?.getResourceAsStream(path) ?: return null
+        val mimeType = when {
+            path.endsWith(".html") -> "text/html"
+            path.endsWith(".css") -> "text/css"
+            path.endsWith(".js") -> "application/javascript"
+            else -> "application/octet-stream"
+        }
+        return WebResourceResponse(mimeType, "utf-8", stream)
+    }
+}
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -50,7 +66,7 @@ actual fun MarkdownEditorView(
         factory = { context ->
             val assetLoader = WebViewAssetLoader.Builder()
                 .setDomain("appassets.androidplatform.net")
-                .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(context))
+                .addPathHandler("/assets/", ClasspathPathHandler())
                 .build()
 
             WebView(context).apply {
