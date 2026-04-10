@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.artavazd-khachatryan"
-version = "1.0.0-alpha03"
+version = "1.0.0-alpha04"
 
 val isMac = System.getProperty("os.name").lowercase().contains("mac")
 

@@ -25,7 +25,7 @@ private const val ASSET_HOST = "https://appassets.androidplatform.net"
 private const val EDITOR_URL = "$ASSET_HOST/assets/offline/milkdown-editor.html"
 
 private class ClasspathPathHandler : WebViewAssetLoader.PathHandler {
-    private val classLoader = MarkdownEditorView::class.java.classLoader
+    private val classLoader = ClasspathPathHandler::class.java.classLoader
 
     override fun handle(path: String): WebResourceResponse? {
         val stream: InputStream = classLoader?.getResourceAsStream(path) ?: return null
