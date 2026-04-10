@@ -65,15 +65,6 @@ kotlin {
         }
     }
 
-    publishing {
-        repositories {
-            maven {
-                name = "GitHubPages"
-                url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
-            }
-        }
-    }
-
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -83,6 +74,15 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.androidx.webkit)
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPages"
+            url = uri(rootProject.layout.buildDirectory.dir("maven-repo"))
         }
     }
 }
