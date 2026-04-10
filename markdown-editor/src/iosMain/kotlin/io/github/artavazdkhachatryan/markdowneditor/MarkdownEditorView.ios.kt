@@ -16,7 +16,10 @@ import androidx.compose.ui.viewinterop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import platform.Foundation.NSBundle
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSURL
 import platform.UIKit.UIUserInterfaceStyle
 import platform.WebKit.WKScriptMessage
 import platform.WebKit.WKScriptMessageHandlerProtocol
@@ -77,16 +80,7 @@ actual fun MarkdownEditorView(
             webView.scrollView.bounces = true
             webView.scrollView.delaysContentTouches = false
 
-            // Resources live inside MarkdownEditor.framework, not in the main bundle
-            val frameworkBundle = NSBundle.bundleWithPath(
-                NSBundle.mainBundle.bundlePath + "/Frameworks/MarkdownEditor.framework"
-            )
-            val htmlUrl = frameworkBundle?.URLForResource(
-                name = "milkdown-editor",
-                withExtension = "html",
-                subdirectory = "offline",
-            )
-
+            val htmlUrl = resolveEditorHtmlUrl()
             if (htmlUrl != null) {
                 val baseUrl = htmlUrl.URLByDeletingLastPathComponent()
                 webView.loadFileURL(htmlUrl, allowingReadAccessToURL = baseUrl ?: htmlUrl)
@@ -142,6 +136,36 @@ actual fun MarkdownEditorView(
             webViewRef = null
         }
     }
+}
+
+/**
+ * Resolves the editor HTML file URL.
+ *
+ * - **klib/Maven consumers**: CMP resources are bundled in the app by the KMP Gradle plugin.
+ *   `Res.getUri()` returns a `file://` URI pointing to `compose-resources/files/offline/` in the app bundle.
+ * - **XCFramework consumers** (e.g., the local demo app): CMP resources are not bundled automatically.
+ *   Falls back to finding the `MarkdownEditor.framework` among loaded frameworks, where resources
+ *   are copied by the Gradle build task into `MarkdownEditor.framework/offline/`.
+ */
+@OptIn(ExperimentalResourceApi::class)
+private fun resolveEditorHtmlUrl(): NSURL? {
+    // Try CMP resources first (klib/Maven consumers)
+    val cmpUri = Res.getUri("files/offline/milkdown-editor.html")
+    val cmpUrl = NSURL.URLWithString(cmpUri)
+    val cmpPath = cmpUrl?.path
+    if (cmpPath != null && NSFileManager.defaultManager.fileExistsAtPath(cmpPath)) {
+        return cmpUrl
+    }
+
+    // Fallback: resources copied into the XCFramework bundle (XCFramework/local demo consumers)
+    val markdownBundle = (NSBundle.allFrameworks as List<*>)
+        .filterIsInstance<NSBundle>()
+        .firstOrNull { it.bundlePath.endsWith("MarkdownEditor.framework") }
+    return markdownBundle?.URLForResource(
+        name = "milkdown-editor",
+        withExtension = "html",
+        subdirectory = "offline",
+    )
 }
 
 internal fun WKWebView.sendEditorMessage(type: String, payload: String) {

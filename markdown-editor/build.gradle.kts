@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.artavazd-khachatryan"
-version = "1.0.0-alpha05"
+version = "1.0.0-alpha06"
 
 val isMac = System.getProperty("os.name").lowercase().contains("mac")
 
@@ -71,11 +71,18 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.material3)
+            implementation(compose.components.resources)
         }
         androidMain.dependencies {
             implementation(libs.androidx.webkit)
         }
     }
+}
+
+compose.resources {
+    publicResClass = false
+    packageOfResClass = "io.github.artavazdkhachatryan.markdowneditor"
+    generateResClass = always
 }
 
 publishing {
