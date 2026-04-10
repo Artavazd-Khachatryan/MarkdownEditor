@@ -5,9 +5,17 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   publish:
     runs-on: macos-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -23,10 +31,14 @@ jobs:
       - name: Publish KMP artifacts
         run: ./gradlew :markdown-editor:publishAllPublicationsToGitHubPagesRepository
 
-      - name: Deploy to maven-repo branch
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Verify artifacts
+        run: ls -R build/maven-repo
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          branch: maven-repo
-          folder: build/maven-repo
-          clean: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          path: build/maven-repo
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
