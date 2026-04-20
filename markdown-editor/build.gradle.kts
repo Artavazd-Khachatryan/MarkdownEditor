@@ -35,7 +35,7 @@ kotlin {
                 val copyTaskName = "copyOfflineAssetsInto${framework.linkTaskName.replaceFirstChar { it.uppercaseChar() }}"
                 val frameworkOutputDir = framework.outputDirectory
                 tasks.register<Copy>(copyTaskName) {
-                    from("src/iosMain/resources/offline")
+                    from("src/commonMain/composeResources/files/offline")
                     into(frameworkOutputDir.resolve("MarkdownEditor.framework/offline"))
                     dependsOn(framework.linkTaskName)
                 }
@@ -57,7 +57,7 @@ kotlin {
                     .filter { it.name == "MarkdownEditor.framework" && it.parentFile.name.contains("simulator") }
                     .forEach { frameworkDir ->
                         copy {
-                            from("src/iosMain/resources/offline")
+                            from("src/commonMain/composeResources/files/offline")
                             into(frameworkDir.resolve("offline"))
                         }
                     }
