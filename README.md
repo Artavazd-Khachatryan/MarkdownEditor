@@ -32,7 +32,7 @@ dependencyResolutionManagement {
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("io.github.artavazdkhachatryan:markdown-editor-android:1.0.0-alpha06")
+    implementation("io.github.artavazdkhachatryan:markdown-editor-android:<latest-version>")
 }
 ```
 
@@ -42,7 +42,7 @@ Add the package to your Xcode project via **File → Add Package Dependencies** 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ArtavazdKhachatryan/MarkdownEditor", from: "1.0.0-alpha06")
+    .package(url: "https://github.com/ArtavazdKhachatryan/MarkdownEditor", from: "<latest-version>")
 ]
 ```
 
@@ -53,7 +53,7 @@ dependencies: [
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.artavazdkhachatryan:markdown-editor:1.0.0-alpha06")
+            implementation("io.github.artavazdkhachatryan:markdown-editor:<latest-version>")
         }
     }
 }
